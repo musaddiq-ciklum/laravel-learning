@@ -24,7 +24,7 @@ class CreateProductVariantsTable extends Migration
             $table->decimal('msrp', 8, 2)->default(null);
             $table->integer('stock');
             $table->boolean('in_stock')->default('1');
-            $table->boolean('isS_default')->default('1');
+            $table->boolean('is_default')->default('1');
             $table->boolean('active')->default('1');
             $table->timestamps();
         });
