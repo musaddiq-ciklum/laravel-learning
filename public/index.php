@@ -1,6 +1,6 @@
 <?php
 
-echo 'Laravel is uploaded....file updated again';exit;
+echo 'Testing for heroku';exit;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
