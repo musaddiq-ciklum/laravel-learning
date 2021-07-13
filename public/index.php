@@ -1,6 +1,6 @@
 <?php
 
-echo 'Laravel is uploaded....';exit;
+echo 'Laravel is uploaded....file updated again';exit;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
