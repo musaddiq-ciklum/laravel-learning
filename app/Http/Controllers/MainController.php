@@ -22,7 +22,7 @@ class MainController extends Controller
         $latest_products = $this->product_model->getRows([]);
 
         $this->data['sliders'] = $sliders;
-        echo 'Testing upload to heroku using github actions';
+        echo 'Testing upload to heroku using changes not uploaded';
         $this->data['latest_products'] = $latest_products;
         return view('front.home',$this->data);
     }
