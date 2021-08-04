@@ -36,7 +36,6 @@ class StoreProductRequest extends FormRequest
             'msrp' => '',
             'stock' => 'required|integer',
             'size' => 'required',
-            'color' => 'required',
             'image' => 'required_if:id,0',
             'gallery'=>'',
             'short_desc' => 'required|min:30',

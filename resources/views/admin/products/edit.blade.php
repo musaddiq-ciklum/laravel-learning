@@ -67,21 +67,21 @@
                             @error('cost_price')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
-                            <input name="cost_price" id="cost_price" placeholder="Cost Price" type="text" class="form-control @error('cost_price') is-invalid @enderror" value="@if(old('cost_price')){{old('cost_price')}}@else{{$product->cost_price}}@endif" >
+                            <input name="cost_price" id="cost_price" placeholder="Cost Price" type="text" class="form-control @error('cost_price') is-invalid @enderror" value="@if(old('cost_price')){{old('cost_price')}}@else{{$default_size->pivot->cost_price}}@endif" >
                         </div>
                         <div class="form-group">
                             <label for="sale_price" class="">Sale Price</label>
                             @error('sale_price')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
-                            <input name="sale_price" id="sale_price" placeholder="Sale Price" type="text" class="form-control @error('sale_price') is-invalid @enderror" value="@if(old('sale_price')){{old('sale_price')}}@else{{$product->sale_price}}@endif" >
+                            <input name="sale_price" id="sale_price" placeholder="Sale Price" type="text" class="form-control @error('sale_price') is-invalid @enderror" value="@if(old('sale_price')){{old('sale_price')}}@else{{$default_size->pivot->sale_price}}@endif" >
                         </div>
                         <div class="form-group">
                             <label for="cost_price" class="">Stock</label>
                             @error('stock')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
-                            <input name="stock" id="stock" placeholder="Stock" type="text" class="form-control @error('stock') is-invalid @enderror" value="@if(old('stock')){{old('stock')}}@else{{$product->stock}}@endif" >
+                            <input name="stock" id="stock" placeholder="Stock" type="text" class="form-control @error('stock') is-invalid @enderror" value="@if(old('stock')){{old('stock')}}@else{{$default_size->pivot->stock}}@endif" >
                         </div>
 
 
@@ -90,7 +90,7 @@
                 </div>
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Variations</h3>
+                        <h3 class="card-title">Size</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
@@ -103,7 +103,7 @@
                             @foreach($sizes as $size)
                                 @php
                                     $form_size = old('size');
-                                    $db_size = $product->size_id;
+                                    $db_size = $default_size->pivot->size_id;
                                     $selected_size = ($form_size)?$form_size:$db_size;
                                     $checked = '';
                                     if($selected_size == $size->id)
@@ -112,25 +112,6 @@
                                 <div class="position-relative form-check">
                                     <label class="form-check-label"><input name="size" type="radio" class="form-check-input" {{ $checked }}  value="{{ $size->id }}">
                                         {{ $size->name }}</label>
-                                </div>
-                            @endforeach
-                            <br />
-                            <h5>Color</h5>
-                            @error('color')
-                            <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                            @foreach($colors as $color)
-                                @php
-                                    $form_color = old('color');
-                                    $db_color = $product->color_id;
-                                    $selected_color = ($form_color)?$form_color:$db_color;
-                                    $checked = '';
-                                    if($selected_color == $color->id)
-                                        $checked='checked';
-                                @endphp
-                                <div class="position-relative form-check">
-                                    <label class="form-check-label"><input name="color" type="radio" class="form-check-input" {{ $checked }} value="{{ $color->id }}">
-                                        {{ $color->name }}</label>
                                 </div>
                             @endforeach
 

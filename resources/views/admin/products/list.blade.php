@@ -23,6 +23,7 @@
                             <th>#</th>
                             <th>Name</th>
                             <th>Category</th>
+                            <th>Size</th>
                             <th>C.Price</th>
                             <th>S.Price</th>
                             <th>Is Active</th>
@@ -30,33 +31,44 @@
                         </tr>
                         </thead>
                         <tbody>
+
                         @foreach ($products as $product)
                             @php
-                            $checked = '';
-                            if($product->active){
-                                $checked = 'checked';
-                            }
+                                $default_size =  new stdClass();
+                                $checked = '';
+                                foreach($product->sizes as $size ):
+                                    if($size->pivot->is_default == 1):
+                                        $default_size = $size;
+                                        if($size->pivot->active)
+                                            $checked = 'checked';
+                                        break;
+                                    endif;
+                                endforeach;
                             @endphp
+
+
                             <tr>
                                 <th scope="row">{{ $loop->iteration }}</th>
                                 <td>{{ $product->name }}</td>
-                                <td>{{ $product->category_name }}</td>
-                                <td>{{ $product->cost_price }}</td>
-                                <td>{{ $product->sale_price }}</td>
-
+                                <td>{{ $product->category->name }}</td>
+                                <td>
+                                    {{ $default_size->name }}
+                                </td>
+                                <td>{{ $default_size->pivot->cost_price }}</td>
+                                <td>{{ $default_size->pivot->sale_price }}</td>
                                 <td>
                                     <div class="mb-2 mr-2 badge badge-pill">
 {{--                                        --}}
-                                        <input class="status" type="checkbox" name="my-checkbox" {{ $checked }} data-bootstrap-switch data-off-color="danger" data-on-color="success" data-status="{{ $product->active }}" data-product_id="{{ $product->id }}">
+                                        <input class="status" type="checkbox" name="my-checkbox" {{ $checked }} data-bootstrap-switch data-off-color="danger" data-on-color="success" data-status="{{ $size->pivot->active }}" data-product_id="{{ $product->id }}">
                                     </div>
                                 </td>
                                 <td>
                                     <div class="dropdown d-inline-block">
                                         <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="mb-2 mr-2 dropdown-toggle btn btn-info">Action</button>
                                         <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu">
-                                            <a href="{{ route('products.show',5) }}" class="dropdown-item">View</a>
+                                            <a href="{{ route('products.show',$product->id) }}" class="dropdown-item">View</a>
                                             <a href="{{ route('products.edit',$product->id) }}" class="dropdown-item">Edit</a>
-                                            <form action="{{ route('products.show',5) }}" onsubmit="return confirm('Are you sure to delete this product?')" method="post">
+                                            <form action="{{ route('products.destroy',$product->id) }}" onsubmit="return confirm('Are you sure to delete this product?')" method="post">
                                                 @csrf
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="text-danger dropdown-item">Delete</button>
