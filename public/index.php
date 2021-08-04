@@ -1,6 +1,5 @@
 <?php
 
-echo 'Testing for heroku';exit;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 

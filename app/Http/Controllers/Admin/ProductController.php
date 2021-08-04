@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\File;
 
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\ProductVariants;
+use App\Models\ProductSize;
 
 class ProductController extends Controller
 {
@@ -39,8 +40,6 @@ class ProductController extends Controller
         $this->categories = Category::all();
         $this->sizes = DB::table('sizes')
             ->get();
-        $this->colors = DB::table('colors')
-            ->get();
     }
 
 
@@ -50,20 +49,7 @@ class ProductController extends Controller
         $product_data=[
             'where'=>[]
         ];
-        $products = $this->productModel->getRows($product_data);
-        //dd($products);
-        //
-        //Extra fields
-        /*in stock
-        active*/
-        //Fields in variants table (in stock and prices)
-        /*echo 'Product listing...'.route('products.index').'<br />';
-        echo 'Product create...'.route('products.create').'<br />';
-        echo 'Product store...'.route('products.store').'<br />';
-        echo 'Product show...'.route('products.show',5).'<br />';
-        echo 'Product edit...'.route('products.edit',5).'<br />';
-        echo 'Product delete...'.route('products.destroy',5).'<br />';*/
-
+        $products = Product::latest()->paginate(env('PAGING_PER_PAGE', 20));
         $data=[
             'products'=>$products,
             'success'=>$request->session()->get('success'),
@@ -121,10 +107,9 @@ class ProductController extends Controller
         $product->save();
         $product_id = $product->id;
 
-        $variant = new ProductVariants;
+        $variant = new ProductSize;
         $variant->product_id = $product_id;
         $variant->size_id = $request->input('size');
-        $variant->color_id = $request->input('color');
         $variant->cost_price = $request->input('cost_price');
         $variant->sale_price = $request->input('sale_price');
         $variant->msrp = '0';
@@ -147,7 +132,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-
+        return '<h1>Page is under construction</h1>';
     }
 
     /**
@@ -158,17 +143,21 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $product_data=[
-            'where'=>['products.id'=>$id],
-            'singleRow'=>true
-        ];
-        $product = $this->productModel->getRow($product_data);
+        $product = Product::find($id);
+        $default_size = null;
+        foreach($product->sizes as $size ) {
+            if ($size->pivot->is_default == 1) {
+                $default_size = $size;
+                break;
+            }
+        }
 
         $data = [
             'page_heading'=>$this->page_heading,
             'page_sub_heading'=>$this->page_sub_heading,
             'main_page'=>$this->main_page,
             'product'=>$product,
+            'default_size'=>$default_size,
             'categories'=>$this->categories,
             'sizes'=>$this->sizes,
             'colors'=>$this->colors
@@ -197,14 +186,13 @@ class ProductController extends Controller
         $product->meta_desc = $request->input('meta_desc');
         $product->save();
 
-        $variant = ProductVariants::where('product_id', $id)
+        $product_size = ProductSize::where('product_id', $id)
             ->where('is_default',1)->first();
-        $variant->size_id = $request->input('size');
-        $variant->color_id = $request->input('color');
-        $variant->cost_price = $request->input('cost_price');
-        $variant->sale_price = $request->input('sale_price');
-        $variant->stock = $request->input('stock');
-        $variant->save();
+        $product_size->size_id = $request->input('size');
+        $product_size->cost_price = $request->input('cost_price');
+        $product_size->sale_price = $request->input('sale_price');
+        $product_size->stock = $request->input('stock');
+        $product_size->save();
 
         $this->upload_image($request, $id, $product->slug);
 
@@ -218,9 +206,24 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $product = Product::find($id)->delete();
+
+        //When hard deleting product
+        /*foreach ($product->sizes as $size){
+            ProductSize::find($size->pivot->id)->delete();
+        }
+        $this->deleteImage($product->image);
+        $product->delete();*/
+        $request->session()->flash('success', 'deleted');
+        return redirect()->route('products.index');
+    }
+
+    function deleteImage($imageName=''){
+        File::delete(public_path(env('PRODUCT_IMG_PATH').$imageName));
+        File::delete(public_path(env('PRODUCT_THUMB_LARGE_PATH').'/'.$imageName));
+        File::delete(public_path(env('PRODUCT_THUMB_SMALL_PATH').'/'.$imageName));
     }
 
     function upload_image($request,$id,$slug){
