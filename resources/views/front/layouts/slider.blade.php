@@ -12,10 +12,10 @@
                                 <div class="row">
                                     <div class="col-md-10 col-lg-8 col-md-offset-2 col-lg-offset-4 col-sm-12 col-xs-12">
                                         <div class="slider__inner">
-                                            <h1>{{ $slider->title }} <span class="text--theme">{{ $slider->caption }}</span></h1>
+                                            <h1>{{ $slider->title }}  <span class="text--theme">{{ $slider->caption }}</span></h1>
                                             @if($slider->product_id)
                                                 <div class="slider__btn">
-                                                    <a class="htc__btn" href="{{ getProductUrl(['id'=>$slider->product_id]) }}">shop now</a>
+                                                    <a class="htc__btn" href="{{ getProductUrl($slider->product_id) }}">shop now</a>
                                                 </div>
                                             @endif
                                         </div>

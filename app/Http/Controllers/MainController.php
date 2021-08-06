@@ -19,10 +19,13 @@ class MainController extends Controller
     function home(){
 
         $sliders =  Slider::all()->where('deleted_at','=',null);
-        $latest_products = $this->product_model->getRows([]);
+        $latest_products = Product::latest()->paginate(env('PAGING_PER_PAGE', 20));
+
+        /*foreach($latest_products as $product){
+            dd($product->category);exit;
+        }*/
 
         $this->data['sliders'] = $sliders;
-        echo 'Testing upload to heroku using github actions';
         $this->data['latest_products'] = $latest_products;
         return view('front.home',$this->data);
     }
