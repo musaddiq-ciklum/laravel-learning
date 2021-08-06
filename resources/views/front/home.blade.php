@@ -43,7 +43,7 @@
                                     <div class="product-slider-active owl-carousel">
                                         @foreach($latest_products as $product)
                                             @php
-                                                $product_url = getProductUrl((array)$product);
+                                                $product_url = getProductUrl($product->id);
                                                 $product_name = $product->name;
                                                 $img_url = asset(env('PRODUCT_THUMB_SMALL_PATH').'/'.$product->image);
                                             @endphp
