@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\PostController;
 
 use App\Http\Controllers\MainController;
 
@@ -33,6 +34,8 @@ Route::get('/dashboard', function () {
     return view('admin/dashboard');
 })->middleware(['auth'])->name('dashboard');*/
 
+Route::get('/permissions/create', [\App\Http\Controllers\PermissionController::class, 'create'])->name('create_permission');
+
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin/dashboard');
@@ -48,6 +51,29 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::put('/products/change-status',[ProductController::class,'change_status'])->name('change_product_status');
     Route::resource('/products', ProductController::class)->name('*','products');
     Route::resource('/pages',PageController::class)->name('*','pages');
+
+    Route::get('/posts',[PostController::class,'index'])->name('admin_posts');
+
+    Route::middleware('role:admin|writer')->group(function(){
+        Route::get('/posts/create',[PostController::class,'create'])
+            ->name('posts.create');
+        Route::post('/posts/store',[PostController::class,'store'])
+            ->name('posts.store');
+        Route::post('/posts/{post}',[PostController::class,'update'])
+            ->name('posts.update');
+        Route::delete('/posts/{post}',[PostController::class,'destroy'])
+            ->name('posts.destroy');
+    });
+    Route::get('/posts/{post}/edit',[PostController::class,'edit'])
+        ->name('posts.edit')
+        ->middleware('role:admin|writer|editor');
+    Route::put('/posts/{post}/publish',[PostController::class,'publish'])
+        ->name('posts.publish')
+        ->middleware('role:admin|writer|editor|publisher');
+
+    /*Route::get('/posts/create',[PostController::class,'create'])
+        ->name('posts.create')
+        ->middleware('role:admin|writer');*/
 });
 
 
