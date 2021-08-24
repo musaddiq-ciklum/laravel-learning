@@ -117,7 +117,7 @@
                                         <li><a href="wishlist.html">wishlist</a></li>
                                         <li><a href="checkout.html">checkout</a></li>
                                         <li><a href="team.html">team</a></li>
-                                        <li><a href="login-register.html">login & register</a></li>
+                                        <li><a href="{{ route('user_login') }}">login & register</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="contact.html">contact</a></li>
@@ -150,7 +150,7 @@
                                             <li><a href="wishlist.html">wishlist</a></li>
                                             <li><a href="checkout.html">checkout</a></li>
                                             <li><a href="team.html">team</a></li>
-                                            <li><a href="login-register.html">login & register</a></li>
+                                            <li><a href="{{ route('user_login') }}">login & register</a></li>
                                         </ul>
                                     </li>
                                     <li><a href="contact.html">contact</a></li>
@@ -162,7 +162,19 @@
                     <div class="col-md-2 col-sm-4 col-xs-3">
                         <ul class="menu-extra">
                             <li class="search search__open hidden-xs"><span class="ti-search"></span></li>
-                            <li><a href="login-register.html"><span class="ti-user"></span></a></li>
+                            @guest
+                                <li><a href="{{ route('user_login') }}"><span class="ti-user"></span></a></li>
+                            @endguest
+                            @auth
+                                <li><a href="{{ route('profile') }}">Profile</a></li>
+                                <li>
+                                    <form id="logout" action="{{ route('logout') }}" method="post">
+                                        @csrf
+                                        <a href="#" onclick="$('#logout').submit()">Logout</a>
+                                    </form>
+                                </li>
+                            @endauth
+
                             <li class="cart__menu"><span class="ti-shopping-cart"></span></li>
                             <li class="toggle__menu hidden-xs hidden-sm"><span class="ti-menu"></span></li>
                         </ul>
@@ -313,6 +325,8 @@
     <!-- End Feature Product -->
     @section('home_page')
     @show
+@section('page_contents')
+@show
 
 
     <!-- Start Footer Area -->

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PostController;
 
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +75,13 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     /*Route::get('/posts/create',[PostController::class,'create'])
         ->name('posts.create')
         ->middleware('role:admin|writer');*/
+});
+
+/*      Front Routs     */
+Route::middleware('auth')->group(function (){
+    Route::get('/profile',[UserController::class, 'profile'])
+        ->middleware(['password.confirm'])
+        ->name('profile');
 });
 
 
