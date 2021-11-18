@@ -86,11 +86,6 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        //echo $request->file('image')->getClientOriginalExtension();exit;
-        //echo '<pre>';print_r($input);exit;
-        //echo $request->input('image');exit;
-//        $request->file('image')->storeAs('uploads/products', 'abc123.jpg');
-//        exit;
         $validated = $request->validated();
 
         $product = new Product;
@@ -98,6 +93,7 @@ class ProductController extends Controller
         $product->slug = Str::slug($product->name, '-');
         $product->category_id = $request->input('category_id');
         $product->active = '1';
+        //$product->image = 'abc.jpg';
         //$product->image = $request->file('image')->storeAs('uploads/products', $fileName);
         //$product->gallery = $request->input('gallery');
         $product->short_desc = $request->input('short_desc');
@@ -187,7 +183,8 @@ class ProductController extends Controller
         $product->save();
 
         $product_size = ProductSize::where('product_id', $id)
-            ->where('is_default',1)->first();
+            ->where('is_default',1)
+            ->first();
         $product_size->size_id = $request->input('size');
         $product_size->cost_price = $request->input('cost_price');
         $product_size->sale_price = $request->input('sale_price');

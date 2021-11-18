@@ -56,6 +56,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/posts',[PostController::class,'index'])->name('admin_posts');
 
     Route::middleware('role:admin|writer')->group(function(){
+   // Route::middleware(['auth'])->group(function(){
         Route::get('/posts/create',[PostController::class,'create'])
             ->name('posts.create');
         Route::post('/posts/store',[PostController::class,'store'])

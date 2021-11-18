@@ -14,7 +14,7 @@ class CreateProductSizeTable extends Migration
     public function up()
     {
         Schema::create('product_size', function (Blueprint $table) {
-            $table->id();
+            $table->id()->autoIncrement();
             $table->foreignId('product_id')->constrained();
             $table->foreignId('size_id')->constrained();
             $table->decimal('cost_price',8,2);
