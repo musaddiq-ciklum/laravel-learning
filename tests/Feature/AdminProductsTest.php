@@ -17,28 +17,8 @@ use Tests\TestCase;
 
 class AdminProductsTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function atest_guest_cannot_access_admin_dashboard()
-    {
-        $response = $this->get('/admin/dashboard');
-        $response->assertStatus(302);
-    }
-
-    /*public function test_authenticated_user_can_access_dashboard()
-    {
-        $user = User::factory()->create();
-        $user->assignRole('admin');
-
-        $response = $this->actingAs($user)
-            ->get('/admin/dashboard');
-        $response->assertStatus(200);
-    }*/
-
-    public function atest_item_can_be_added()
+   
+    public function test_item_can_be_added()
     {
         $category = Category::inRandomOrder()->first();
         //dd($category);
@@ -66,7 +46,7 @@ class AdminProductsTest extends TestCase
         $this->assertDatabaseHas('products', [
             'name' => $product->name,
         ]);
-        //$this->assertTrue( $product->id!== null);
+        $this->assertTrue( $product->id!== null);
     }
 
     public function test_item_can_be_added_using_controller()
